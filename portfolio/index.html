@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sékou Bangoura | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --bg:#0a0a0a;
+    --bg-soft:#121212;
+    --accent:#ff5630;
+    --accent-dark:#d8431f;
+    --white:#f5f5f3;
+    --gray:#9a9a9a;
+    --gray-soft:#cfcfcf;
+    --line:rgba(245,245,243,0.12);
+    --ff-title:'Syne', sans-serif;
+    --ff-body:'DM Sans', sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:var(--ff-body);
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent);color:#fff;}
+
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+
+  /* ---------------- LOADER ---------------- */
+  #loader{
+    position:fixed;inset:0;background:#000;z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity .8s ease, visibility .8s ease;
+  }
+  #loader.hidden{opacity:0;visibility:hidden;}
+  .loader-mark{position:relative;text-align:center;}
+  .loader-line{
+    height:1px;width:0;background:var(--accent);
+    margin:0 auto 14px;
+    animation:lineGrow 1s ease forwards .2s;
+  }
+  @keyframes lineGrow{ to { width:90px; } }
+  .loader-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);
+    margin:0 auto 14px;
+    animation:dotPulse .6s ease forwards;
+  }
+  @keyframes dotPulse{ to{ transform:scale(0); height:1px;} }
+  .loader-letters{
+    font-family:var(--ff-title);
+    font-size:2.4rem;letter-spacing:10px;color:var(--white);
+    opacity:0; font-weight:700;
+    animation:lettersFade .6s ease forwards 1s;
+  }
+  @keyframes lettersFade{ to{ opacity:1; } }
+
+  /* ---------------- HEADER ---------------- */
+  header{
+    position:fixed;top:0;left:0;width:100%;z-index:500;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:24px 6%;
+    background:transparent;
+    transition:background .35s ease, padding .35s ease, box-shadow .35s ease;
+  }
+  header.scrolled{
+    background:#fff;
+    padding:16px 6%;
+    box-shadow:0 2px 18px rgba(0,0,0,.08);
+  }
+  .logo{
+    font-family:var(--ff-title);
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:1px;
+    color:var(--white);
+    transition:color .35s ease;
+  }
+  header.scrolled .logo{color:var(--accent);}
+
+  nav ul{display:flex;gap:38px;}
+  nav a{
+    font-size:.78rem;font-weight:700;letter-spacing:1px;
+    color:var(--white);
+    position:relative;
+    padding-bottom:4px;
+    transition:color .3s ease;
+  }
+  header.scrolled nav a{color:#1a1a1a;}
+  nav a::after{
+    content:"";position:absolute;left:0;bottom:0;height:2px;width:0;
+    background:var(--accent);transition:width .3s ease;
+  }
+  nav a:hover::after, nav a.active::after{width:100%;}
+  nav a.active{color:var(--accent) !important;}
+
+  .burger{
+    display:none;flex-direction:column;gap:5px;
+    width:28px;z-index:600;
+  }
+  .burger span{height:2px;width:100%;background:var(--white);transition:.3s;}
+  header.scrolled .burger span{background:#1a1a1a;}
+  .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .burger.open span:nth-child(2){opacity:0;}
+  .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ---------------- HERO ---------------- */
+  #hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    padding:140px 6% 80px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,86,48,0.08), transparent 55%),
+      var(--bg);
+  }
+  .hero-arrow{
+    width:52px;height:52px;border-radius:50%;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:46px;
+    animation:bounce 2s ease-in-out infinite;
+    box-shadow:0 8px 26px rgba(255,86,48,.35);
+  }
+  .hero-arrow svg{width:20px;height:20px;}
+  @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+
+  #typed-title{
+    font-family:var(--ff-title);
+    font-weight:800;
+    font-size:clamp(2rem, 5.4vw, 4rem);
+    line-height:1.15;
+    max-width:980px;
+  }
+  .cursor{
+    display:inline-block;width:3px;height:.85em;
+    background:var(--accent);
+    margin-left:4px;
+    animation:blink 1s step-end infinite;
+    vertical-align:-0.1em;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  #typed-sub{
+    font-style:italic;
+    color:var(--gray-soft);
+    font-size:clamp(.95rem, 1.6vw, 1.15rem);
+    max-width:680px;
+    margin-top:30px;
+    line-height:1.75;
+    min-height:1em;
+  }
+
+  /* ---------------- INTRO / FAISONS CONNAISSANCE ---------------- */
+  #intro{
+    min-height:100vh;
+    background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:100px 7%;
+  }
+  #intro h2{
+    font-family:var(--ff-title);
+    font-weight:800;
+    font-size:clamp(1.9rem,4vw,2.8rem);
+    margin-bottom:30px;
+  }
+  #intro p{
+    max-width:680px;color:#fff0ec;
+    font-size:1.02rem;line-height:1.85;
+    margin-bottom:42px;
+  }
+  .btn-pill{
+    background:#fff;color:#1a1a1a;
+    padding:16px 42px;border-radius:50px;
+    font-weight:700;font-size:.8rem;letter-spacing:1.5px;
+    transition:transform .3s ease, box-shadow .3s ease;
+    display:inline-block;
+  }
+  .btn-pill:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.25);}
+  .btn-pill-accent{
+    background:var(--accent);color:#fff;
+  }
+
+  /* ---------------- SECTION GENERIC ---------------- */
+  .section{
+    padding:130px 7%;
+    background:var(--bg);
+  }
+  .section-head{text-align:center;margin-bottom:80px;}
+  .section-head h2{
+    font-family:var(--ff-title);
+    font-weight:800;
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    color:var(--white);
+  }
+  .section-head .underline{
+    width:46px;height:2px;background:var(--accent);
+    margin:18px auto;
+  }
+  .section-head p{
+    color:var(--gray);
+    font-style:italic;font-size:.95rem;
+  }
+
+  /* ---------------- COMPETENCES ---------------- */
+  .grid-projects{
+    max-width:1180px;margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:36px;
+  }
+  .card{
+    position:relative;
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .card:hover{border-color:rgba(255,86,48,.5); transform:translateY(-4px);}
+  .card-thumb{
+    height:170px;
+    background:repeating-linear-gradient(135deg,#1c1c1c,#1c1c1c 10px,#202020 10px,#202020 20px);
+    display:flex;align-items:center;justify-content:center;
+    color:#4d4d4d;font-size:.72rem;letter-spacing:1px;
+    text-transform:uppercase;
+    position:relative;
+  }
+  .card-body{padding:22px 24px 26px;}
+  .card-body h3{
+    font-family:var(--ff-title);
+    font-size:1.08rem;font-weight:700;
+    margin-bottom:6px;
+  }
+  .card-body span{
+    color:var(--gray);font-size:.82rem;font-style:italic;
+  }
+  .card-plus{
+    position:absolute;top:14px;right:14px;
+    width:38px;height:38px;border-radius:50%;
+    background:var(--accent);
+    color:#fff;font-size:1.3rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transform:scale(.6);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .card:hover .card-plus{opacity:1;transform:scale(1);}
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.72);
+    display:flex;align-items:center;justify-content:center;
+    z-index:800;padding:24px;
+    opacity:0;visibility:hidden;
+    transition:opacity .3s ease, visibility .3s ease;
+  }
+  .modal-overlay.active{opacity:1;visibility:visible;}
+  .modal-box{
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:14px;
+    max-width:520px;width:100%;
+    padding:42px 38px;
+    transform:translateY(20px);
+    transition:transform .3s ease;
+  }
+  .modal-overlay.active .modal-box{transform:translateY(0);}
+  .modal-box h3{
+    font-family:var(--ff-title);
+    font-size:1.4rem;margin-bottom:18px;color:var(--accent);
+  }
+  .modal-box p{
+    color:var(--gray-soft);line-height:1.8;font-size:.95rem;margin-bottom:30px;
+  }
+  .btn-retour{
+    border:1px solid var(--line);
+    padding:11px 28px;border-radius:50px;
+    font-size:.78rem;font-weight:700;letter-spacing:1px;
+    color:var(--white);
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .btn-retour:hover{border-color:var(--accent);background:rgba(255,86,48,.08);}
+
+  /* ---------------- FORMATION ---------------- */
+  .timeline{
+    max-width:1000px;margin:0 auto;position:relative;
+  }
+  .timeline::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;
+    width:1px;background:var(--line);
+    transform:translateX(-50%);
+  }
+  .tl-cols{
+    display:grid;grid-template-columns:1fr 1fr;
+    column-gap:60px;
+  }
+  .tl-col h4{
+    text-align:center;
+    font-family:var(--ff-title);
+    font-size:.78rem;letter-spacing:2px;
+    color:var(--gray);
+    margin-bottom:50px;
+    text-transform:uppercase;
+  }
+  .tl-item{
+    position:relative;
+    padding:0 0 60px 0;
+  }
+  .tl-badge{
+    width:14px;height:14px;border-radius:50%;
+    background:var(--accent);
+    position:absolute;top:4px;
+    box-shadow:0 0 0 5px var(--bg), 0 0 0 6px var(--line);
+  }
+  .tl-col.left .tl-item{text-align:right;padding-right:38px;}
+  .tl-col.left .tl-badge{right:-7px;}
+  .tl-col.right .tl-item{text-align:left;padding-left:38px;}
+  .tl-col.right .tl-badge{left:-7px;}
+
+  .tl-item .date{
+    color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.5px;
+    margin-bottom:6px;
+  }
+  .tl-item h5{
+    font-family:var(--ff-title);font-size:1.02rem;margin-bottom:8px;
+  }
+  .tl-item p{
+    color:var(--gray);font-size:.88rem;line-height:1.7;
+  }
+
+  .cv-wrap{text-align:center;margin-top:30px;}
+
+  /* ---------------- CONTACT ---------------- */
+  #contact .section-head{margin-bottom:60px;}
+  .contact-grid{
+    max-width:560px;margin:0 auto;
+    display:flex;flex-direction:column;gap:26px;
+  }
+  .contact-row{
+    display:flex;align-items:center;gap:18px;
+    padding:22px 26px;
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .contact-row:hover{border-color:rgba(255,86,48,.5); transform:translateX(4px);}
+  .contact-icon{
+    width:40px;height:40px;border-radius:50%;
+    background:rgba(255,86,48,.12);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .contact-icon svg{width:18px;height:18px;}
+  .contact-row .label{font-size:.72rem;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+  .contact-row .value{font-size:.96rem;color:var(--white);font-weight:500;}
+
+  footer{
+    background:#000;
+    text-align:center;
+    padding:30px;
+    color:var(--gray);
+    font-size:.82rem;
+    border-top:1px solid var(--line);
+  }
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width:860px){
+    .grid-projects{grid-template-columns:repeat(2,1fr);}
+    .tl-cols{grid-template-columns:1fr;column-gap:0;}
+    .timeline::before{left:18px;}
+    .tl-col h4{text-align:left;padding-left:38px;margin-bottom:30px;}
+    .tl-col.left .tl-item, .tl-col.right .tl-item{
+      text-align:left;padding-left:38px;padding-right:0;
+    }
+    .tl-col.left .tl-badge, .tl-col.right .tl-badge{left:11px;right:auto;}
+    .tl-col + .tl-col{margin-top:10px;}
+  }
+
+  @media (max-width:680px){
+    nav{
+      position:fixed;top:0;right:0;height:100vh;width:78%;max-width:320px;
+      background:#0e0e0e;
+      display:flex;align-items:center;
+      transform:translateX(100%);
+      transition:transform .4s ease;
+      z-index:550;
+      box-shadow:-10px 0 40px rgba(0,0,0,.4);
+    }
+    nav.open{transform:translateX(0);}
+    nav ul{flex-direction:column;gap:30px;padding:0 40px;}
+    nav a{color:var(--white) !important;font-size:.95rem;}
+    .burger{display:flex;}
+    .grid-projects{grid-template-columns:1fr;}
+    .section{padding:90px 6%;}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-mark">
+    <div class="loader-line"></div>
+    <div class="loader-dot"></div>
+    <div class="loader-letters">SB</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="site-header">
+  <div class="logo">SÉKOU BANGOURA</div>
+  <nav id="nav">
+    <ul>
+      <li><a href="#hero" class="nav-link active">ACCUEIL</a></li>
+      <li><a href="#competences" class="nav-link">MES COMPÉTENCES</a></li>
+      <li><a href="#formation" class="nav-link">FORMATION</a></li>
+      <li><a href="#contact" class="nav-link">CONTACT</a></li>
+    </ul>
+  </nav>
+  <button class="burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-arrow" id="scrollArrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+  </div>
+  <h1 id="typed-title"></h1>
+  <p id="typed-sub"></p>
+</section>
+
+<!-- FAISONS CONNAISSANCE -->
+<section id="intro">
+  <h2>Faisons connaissance</h2>
+  <p>
+    Enchanté&nbsp;! Moi, c'est Sékou. Futur technicien et administrateur réseaux, je suis pour l'instant étudiant en BTS SIO.
+    Passionné par l'administration des réseaux et la sécurité des systèmes, je construis chaque jour les compétences de mon futur métier.
+    <br><br>
+    Ce portfolio retrace mon parcours théorique et mes applications pratiques. Cliquez ci-dessous pour consulter mes compétences&nbsp;!
+  </p>
+  <a href="#competences" class="btn-pill">CONTINUER</a>
+</section>
+
+<!-- COMPETENCES -->
+<section class="section" id="competences">
+  <div class="section-head reveal">
+    <h2>Mes compétences&nbsp;!</h2>
+    <div class="underline"></div>
+    <p>Présentation de mes dernières expériences.</p>
+  </div>
+
+  <div class="grid-projects" id="projectsGrid"></div>
+</section>
+
+<!-- FORMATION -->
+<section class="section" id="formation">
+  <div class="section-head reveal">
+    <h2>FORMATION</h2>
+    <div class="underline"></div>
+    <p>Voici mon parcours professionnel et scolaire</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-cols">
+      <div class="tl-col left">
+        <h4>Parcours scolaire</h4>
+        <div class="tl-item reveal">
+          <span class="tl-badge"></span>
+          <div class="date">Sept. 2024 — Présent</div>
+          <h5>BTS SIO — SISR</h5>
+          <p>CNED, hébergé au Lycée des Petits-Champs — Paris 1er. Formation à distance via le CNED.</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-badge"></span>
+          <div class="date">2021 — 2024</div>
+          <h5>Baccalauréat Professionnel CIEL (SN)</h5>
+          <p>Lycée Galilée — Paris 13e. Mention Assez Bien. Spécialité Systèmes Numériques (réseaux informatiques et systèmes communicants).</p>
+        </div>
+      </div>
+
+      <div class="tl-col right">
+        <h4>Parcours professionnel</h4>
+        <div class="tl-item reveal">
+          <span class="tl-badge"></span>
+          <div class="date">Mai 2024 — Juin 2024</div>
+          <h5>Employé Polyvalent (Stage)</h5>
+          <p>Burger King — Paris 12e. Accueil client, prise de commande, préparation des produits.</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-badge"></span>
+          <div class="date">Janv. 2024 — Fév. 2024</div>
+          <h5>Agent d'Exploitation Logistique (Stage)</h5>
+          <p>Amazon — Brétigny-sur-Orge. Réception, tri, emballage et expédition de colis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-wrap reveal">
+    <a href="/cv/index.html" class="btn-pill btn-pill-accent">Consulter mon curriculum vitae en ligne</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-head reveal">
+    <h2>Contact</h2>
+    <div class="underline"></div>
+    <p>N'hésitez pas à me contacter.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-row reveal">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" stroke="none"/><path d="M22 6l-10 7L2 6" stroke="currentColor" fill="none"/><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" fill="none"/></svg>
+      </div>
+      <div>
+        <div class="label">Email</div>
+        <div class="value">sekou.bangoura@exemple.fr</div>
+      </div>
+    </div>
+
+    <div class="contact-row reveal">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div>
+        <div class="label">Téléphone</div>
+        <div class="value">+33 6 00 00 00 00</div>
+      </div>
+    </div>
+
+    <div class="contact-row reveal">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </div>
+      <div>
+        <div class="label">LinkedIn</div>
+        <div class="value">linkedin.com/in/sekou-bangoura</div>
+      </div>
+    </div>
+
+    <a href="https://github.com/sossa-trl1" target="_blank" rel="noopener" class="contact-row reveal">
+      <div class="contact-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </div>
+      <div>
+        <div class="label">GitHub</div>
+        <div class="value">github.com/sossa-trl1</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer>© Sékou Bangoura | 2026</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <button class="btn-retour" id="modalClose">RETOUR</button>
+  </div>
+</div>
+
+<script>
+  // ---------- DATA PROJETS ----------
+  const projects = [
+    {
+      title: "Déploiement Active Directory",
+      type: "Lab Windows Server",
+      desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès."
+    },
+    {
+      title: "Administration Cisco",
+      type: "Lab réseau — Packet Tracer",
+      desc: "Configuration de routeurs et switchs Cisco via Packet Tracer : VLANs, routage inter-VLAN, protocoles de routage dynamique et sécurisation des équipements réseau."
+    },
+    {
+      title: "ProBio",
+      type: "Automatisation — Make / OpenAI",
+      desc: "Générateur de biographies automatisé combinant Make (anciennement Integromat) et l'API OpenAI, permettant de produire des textes de présentation personnalisés à partir de quelques informations saisies par l'utilisateur."
+    },
+    {
+      title: "Script Shell Bash",
+      type: "Automatisation Linux",
+      desc: "Ensemble de scripts Bash développés sous Linux pour automatiser des tâches d'administration système : sauvegardes, vérifications réseau et gestion des fichiers."
+    },
+    {
+      title: "The Odin Project",
+      type: "HTML / CSS / JavaScript",
+      desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript."
+    },
+    {
+      title: "Daylo",
+      type: "Projet personnel",
+      desc: "Projet personnel en cours de développement, axé sur l'organisation du quotidien. Description détaillée à venir."
+    },
+    {
+      title: "Portfolio V1",
+      type: "HTML / CSS pur",
+      desc: "Mon premier portfolio, entièrement réalisé en HTML et CSS pur, sans framework. Une première étape dans l'apprentissage de l'intégration web."
+    }
+  ];
+
+  const grid = document.getElementById('projectsGrid');
+  projects.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card reveal';
+    card.innerHTML = `
+      <div class="card-thumb">Visuel à venir</div>
+      <button class="card-plus" data-index="${i}">+</button>
+      <div class="card-body">
+        <h3>${p.title}</h3>
+        <span>${p.type}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+
+  document.querySelectorAll('.card-plus').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = projects[btn.dataset.index];
+      modalTitle.textContent = p.title;
+      modalDesc.textContent = p.desc;
+      modalOverlay.classList.add('active');
+    });
+  });
+  document.getElementById('modalClose').addEventListener('click', () => modalOverlay.classList.remove('active'));
+  modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+  // ---------- LOADER ----------
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      startTyping();
+    }, 1700);
+  });
+
+  // ---------- TYPING EFFECT ----------
+  function typeText(el, text, speed, callback){
+    let i = 0;
+    el.innerHTML = '<span class="cursor"></span>';
+    const interval = setInterval(() => {
+      if(i < text.length){
+        el.innerHTML = text.slice(0, i+1) + '<span class="cursor"></span>';
+        i++;
+      } else {
+        clearInterval(interval);
+        const cursor = el.querySelector('.cursor');
+        if(cursor) cursor.remove();
+        if(callback) callback();
+      }
+    }, speed);
+  }
+
+  function startTyping(){
+    const title = "Bienvenue dans mon portfolio";
+    const sub = "Bienvenue sur mon espace personnel. Futur Administrateur systèmes et réseaux, j'utilise ce portfolio pour centraliser mes projets d'école, mes labs réseau et mes créations numériques. Actuellement à la recherche d'une alternance pour l'année 2026-2027, je suis prêt à mettre mes compétences au service de votre équipe.";
+    const titleEl = document.getElementById('typed-title');
+    const subEl = document.getElementById('typed-sub');
+    typeText(titleEl, title, 45, () => {
+      typeText(subEl, sub, 12);
+    });
+  }
+
+  // ---------- HEADER SCROLL + SCROLLSPY ----------
+  const header = document.getElementById('site-header');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const navSections = ['hero','competences','formation','contact'].map(id => document.getElementById(id));
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 80);
+
+    let current = navSections[0].id;
+    navSections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if(rect.top <= window.innerHeight * 0.4){
+        current = sec.id;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // ---------- SCROLL ARROW ----------
+  document.getElementById('scrollArrow').addEventListener('click', () => {
+    document.getElementById('intro').scrollIntoView({behavior:'smooth'});
+  });
+
+  // ---------- BURGER MENU ----------
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    nav.classList.toggle('open');
+  });
+  navLinks.forEach(link => link.addEventListener('click', () => {
+    burger.classList.remove('open');
+    nav.classList.remove('open');
+  }));
+
+  // ---------- INTERSECTION OBSERVER (fade-in reveal) ----------
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
