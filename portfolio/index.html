@@ -238,6 +238,13 @@
     text-transform:uppercase;
     position:relative;
   }
+  .card-thumb.has-img{
+    background:#fff;
+    padding:26px;
+  }
+  .card-thumb.has-img img{
+    max-width:100%;max-height:100%;object-fit:contain;
+  }
   .card-body{padding:22px 24px 26px;}
   .card-body h3{
     font-family:var(--ff-title);
@@ -292,6 +299,17 @@
     transition:border-color .3s ease, background .3s ease;
   }
   .btn-retour:hover{border-color:var(--accent);background:rgba(255,86,48,.08);}
+  .modal-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn-doc{
+    display:none;
+    border:1px solid var(--accent);
+    padding:11px 28px;border-radius:50px;
+    font-size:.78rem;font-weight:700;letter-spacing:1px;
+    color:var(--accent);
+    transition:background .3s ease, color .3s ease;
+  }
+  .btn-doc.visible{display:inline-block;}
+  .btn-doc:hover{background:var(--accent);color:#fff;}
 
   /* ---------------- FORMATION ---------------- */
   .timeline{
@@ -498,6 +516,17 @@
         <h4>Parcours professionnel</h4>
          <div class="tl-item reveal">
           <span class="tl-badge"></span>
+          <div class="date">Avril — Mai 2026</div>
+          <h5>Technicien Informatique (stagiaire)</h5>
+          <p>Tesnima Informatique — 18 rue des Plantes, 75014 Paris</p>
+            <ul>
+              <li>• Intervention chez un client pour la réparation d'une imprimante,</li>
+              <li>• Réparation d'un ordinateur portable : diagnostic d'une surchauffe processeur et remplacement de la pâte thermique,</li>
+              <li>• Installation de systèmes d'exploitation sur postes clients, principalement Windows 11</li>
+            </ul>
+        </div>
+         <div class="tl-item reveal">
+          <span class="tl-badge"></span>
           <div class="date">2023 — 2024</div>
           <h5>Vendeur Informatique (stagiaire)</h5>
           <p>Sinatek — Paris 12e</p>
@@ -596,7 +625,10 @@
   <div class="modal-box">
     <h3 id="modalTitle"></h3>
     <p id="modalDesc"></p>
-    <button class="btn-retour" id="modalClose">RETOUR</button>
+    <div class="modal-actions">
+      <a href="#" target="_blank" rel="noopener" class="btn-doc" id="modalDoc">VOIR LA DOCUMENTATION</a>
+      <button class="btn-retour" id="modalClose">RETOUR</button>
+    </div>
   </div>
 </div>
 
@@ -606,12 +638,14 @@
     {
       title: "Déploiement Active Directory",
       type: "Lab Windows Server",
-      desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès."
+      desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès.",
+      img: "assets/img/active-directory.png"
     },
     {
-      title: "Administration Cisco",
-      type: "Lab réseau — Packet Tracer",
-      desc: "Configuration de routeurs et switchs Cisco via Packet Tracer : VLANs, routage inter-VLAN, protocoles de routage dynamique et sécurisation des équipements réseau."
+      title: "Déploiement GLPI 10",
+      type: "ITSM — Gestion de parc & tickets",
+      desc: "Installation de GLPI 10 dans un conteneur LXC Debian 12 sur Proxmox VE, avec une pile Apache/MariaDB/PHP. Mise en place de la base de données, configuration du VirtualHost Apache, puis sécurisation post-installation (suppression du dossier d'install, durcissement des sessions PHP, changement des identifiants par défaut) et automatisation des tâches de fond via cron.",
+      docHref: "docs/glpi.pdf"
     },
     {
       title: "ProBio",
@@ -626,17 +660,14 @@
     {
       title: "The Odin Project",
       type: "HTML / CSS / JavaScript",
-      desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript."
+      desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript.",
+      img: "assets/img/odin-project.png"
     },
     {
-      title: "Daylo",
-      type: "Projet personnel",
-      desc: "Projet personnel en cours de développement, axé sur l'organisation du quotidien. Description détaillée à venir."
-    },
-    {
-      title: "Portfolio V1",
-      type: "HTML / CSS pur",
-      desc: "Mon premier portfolio, entièrement réalisé en HTML et CSS pur, sans framework. Une première étape dans l'apprentissage de l'intégration web."
+      title: "Serveur Proxmox",
+      type: "Homelab — Proxmox VE",
+      desc: "Serveur personnel monté sur un ancien PC fixe, virtualisé avec Proxmox VE. Héberge plusieurs services en conteneurs/VM séparés : GLPI 10, Nextcloud, Uptime Kuma (supervision, alertes via webhook Discord) et ntopng (analyse du trafic réseau). Accès à distance sécurisé via Tailscale.",
+      docHref: "docs/serveur-proxmox.pdf"
     }
   ];
 
@@ -644,8 +675,11 @@
   projects.forEach((p, i) => {
     const card = document.createElement('div');
     card.className = 'card reveal';
+    const thumb = p.img
+      ? `<div class="card-thumb has-img"><img src="${p.img}" alt="${p.title}"></div>`
+      : `<div class="card-thumb">Visuel à venir</div>`;
     card.innerHTML = `
-      <div class="card-thumb">Visuel à venir</div>
+      ${thumb}
       <button class="card-plus" data-index="${i}">+</button>
       <div class="card-body">
         <h3>${p.title}</h3>
@@ -658,12 +692,19 @@
   const modalOverlay = document.getElementById('modalOverlay');
   const modalTitle = document.getElementById('modalTitle');
   const modalDesc = document.getElementById('modalDesc');
+  const modalDoc = document.getElementById('modalDoc');
 
   document.querySelectorAll('.card-plus').forEach(btn => {
     btn.addEventListener('click', () => {
       const p = projects[btn.dataset.index];
       modalTitle.textContent = p.title;
       modalDesc.textContent = p.desc;
+      if(p.docHref){
+        modalDoc.href = p.docHref;
+        modalDoc.classList.add('visible');
+      } else {
+        modalDoc.classList.remove('visible');
+      }
       modalOverlay.classList.add('active');
     });
   });
