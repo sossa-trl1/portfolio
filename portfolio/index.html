@@ -446,6 +446,7 @@
       <li><a href="#hero" class="nav-link active">ACCUEIL</a></li>
       <li><a href="#competences" class="nav-link">MES COMPÉTENCES</a></li>
       <li><a href="#formation" class="nav-link">FORMATION</a></li>
+      <li><a href="https://portfoliosekou.netlify.app/cv/" class="nav-link">CV</a></li>
       <li><a href="#contact" class="nav-link">CONTACT</a></li>
     </ul>
   </nav>
@@ -639,35 +640,42 @@
       title: "Déploiement Active Directory",
       type: "Lab Windows Server",
       desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès.",
-      img: "assets/img/active-directory.png"
+      img: "assets/img/active-directory.png",
+      link: "docs/active-directory.pdf"
     },
     {
       title: "Déploiement GLPI 10",
       type: "ITSM — Gestion de parc & tickets",
       desc: "Installation de GLPI 10 dans un conteneur LXC Debian 12 sur Proxmox VE, avec une pile Apache/MariaDB/PHP. Mise en place de la base de données, configuration du VirtualHost Apache, puis sécurisation post-installation (suppression du dossier d'install, durcissement des sessions PHP, changement des identifiants par défaut) et automatisation des tâches de fond via cron.",
-      docHref: "docs/glpi.pdf"
+      img: "assets/img/glpi img.png",
+      link: "docs/glpi.pdf"
     },
     {
       title: "ProBio",
       type: "Automatisation — Make / OpenAI",
-      desc: "Générateur de biographies automatisé combinant Make (anciennement Integromat) et l'API OpenAI, permettant de produire des textes de présentation personnalisés à partir de quelques informations saisies par l'utilisateur."
+      desc: "Générateur de biographies automatisé combinant Make et l'API OpenAI, permettant de produire des textes de présentation personnalisés à partir de quelques informations saisies par l'utilisateur.",
+      img: "assets/img/pro bio.png"
     },
     {
       title: "Script Shell Bash",
       type: "Automatisation Linux",
-      desc: "Ensemble de scripts Bash développés sous Linux pour automatiser des tâches d'administration système : sauvegardes, vérifications réseau et gestion des fichiers."
+      desc: "Série de scripts Bash réalisés en TP sous Linux : rendre un script exécutable avec chmod et le lancer via son chemin relatif, manipuler des fichiers (copie, extraction de lignes avec grep, tri et troncature sur /etc/passwd), parcourir le contenu d'un répertoire avec des boucles for et des métacaractères, filtrer des noms de fichiers selon leur première lettre ou leur contenu, et tester si un chemin est un répertoire avec test -d.",
+      img: "assets/img/shell bash.jpg"
     },
     {
       title: "The Odin Project",
       type: "HTML / CSS / JavaScript",
       desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript.",
-      img: "assets/img/odin-project.png"
+      img: "assets/img/odin-project.png",
+      link: "https://www.theodinproject.com/",
+      linkLabel: "VISITER THE ODIN PROJECT"
     },
     {
       title: "Serveur Proxmox",
       type: "Homelab — Proxmox VE",
       desc: "Serveur personnel monté sur un ancien PC fixe, virtualisé avec Proxmox VE. Héberge plusieurs services en conteneurs/VM séparés : GLPI 10, Nextcloud, Uptime Kuma (supervision, alertes via webhook Discord) et ntopng (analyse du trafic réseau). Accès à distance sécurisé via Tailscale.",
-      docHref: "docs/serveur-proxmox.pdf"
+      img: "assets/img/serv proxmox.png",
+      link: "docs/serveur-proxmox.pdf"
     }
   ];
 
@@ -699,8 +707,9 @@
       const p = projects[btn.dataset.index];
       modalTitle.textContent = p.title;
       modalDesc.textContent = p.desc;
-      if(p.docHref){
-        modalDoc.href = p.docHref;
+      if(p.link){
+        modalDoc.href = p.link;
+        modalDoc.textContent = p.linkLabel || "VOIR LA DOCUMENTATION";
         modalDoc.classList.add('visible');
       } else {
         modalDoc.classList.remove('visible');
