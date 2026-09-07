@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { margin: 22mm 18mm; }
+  body {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-size: 11.5pt;
+    color: #1a1a1a;
+    line-height: 1.5;
+  }
+  h1 {
+    color: #c0392b;
+    font-size: 19pt;
+    text-align: center;
+    margin-bottom: 26px;
+    text-decoration: underline;
+  }
+  h2 {
+    color: #c0392b;
+    font-size: 13.5pt;
+    font-weight: bold;
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  p { margin: 4px 0 10px 0; }
+  ul { margin: 4px 0 10px 22px; padding: 0; }
+  li { margin-bottom: 4px; }
+  b, strong { color: #c0392b; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 10.3pt;
+  }
+  th {
+    background: #c0392b;
+    color: #fff;
+    text-align: left;
+    padding: 7px 9px;
+    font-weight: bold;
+  }
+  td {
+    border: 1px solid #ddd;
+    padding: 7px 9px;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f7f2f1; }
+  .source-note {
+    margin-top: 22px;
+    padding: 10px 14px;
+    background: #faf1f0;
+    border-left: 4px solid #c0392b;
+    font-size: 10.5pt;
+  }
+  .source-note b { color: #c0392b; }
+</style>
+</head>
+<body>
+
+<h1>Documentation du Projet : Mon Serveur Maison et ses Services</h1>
+
+<h2>1. C'est quoi ce projet ?</h2>
+<p>Ce projet consiste à transformer un vieil ordinateur (une tour PC) en un serveur maison intelligent.</p>
+<p>Au lieu d'installer un système d'exploitation classique comme Windows, j'ai installé un système spécial nommé <b>Proxmox</b>. Il permet de découper un seul ordinateur physique en plusieurs « petits ordinateurs virtuels » complètement indépendants les uns des autres (ce qu'on appelle des <b>conteneurs</b>).</p>
+
+<h2>2. Pourquoi faire ça ?</h2>
+<ul>
+  <li><b>Économie d'énergie</b> : Le serveur consomme très peu d'électricité car il n'affiche pas de bureau vidéo lourd et fonctionne uniquement avec du texte en arrière-plan.</li>
+  <li><b>Sécurité et organisation</b> : Chaque application tourne dans sa propre boîte fermée. Si une application a un problème, les autres continuent de fonctionner sans être touchées.</li>
+  <li><b>Pratique &amp; Accès distant</b> : Tout se pilote à distance depuis un simple navigateur web, même en dehors de la maison grâce à un réseau privé sécurisé.</li>
+</ul>
+
+<h2>3. Le matériel et les outils utilisés</h2>
+<ul>
+  <li><b>Serveur physique (Ancien PC fixe)</b> : C'est la machine centrale. Elle reste allumée et héberge l'ensemble du système, des services et des conteneurs.</li>
+  <li><b>Poste client (Mon PC portable)</b> : C'est l'ordinateur utilisé au quotidien et à l'école. Il ne stocke pas les machines lourdes : il sert uniquement d'interface pour se connecter à distance au serveur fixe.</li>
+  <li><b>Support d'installation (Clé USB d'au moins 4 Go)</b> : Nécessaire pour démarrer l'ancien PC fixe et y installer le système principal (Proxmox VE).</li>
+  <li><b>Réseau VPN (Tailscale)</b> : Cet outil n'est pas un service dans un conteneur. Il est directement installé sur l'ordinateur serveur principal et sur le PC portable. Il crée un tunnel sécurisé (VPN) qui permet d'accéder à toute l'infrastructure et aux applications à distance depuis n'importe où (à l'école, en déplacement) comme si on était à la maison.</li>
+</ul>
+
+<h2>4. Cartographie des Services Déployés (Conteneurs LXC)</h2>
+<p>Chaque application a un rôle précis pour gérer le réseau et les besoins du système :</p>
+<table>
+  <tr>
+    <th>ID / Nom</th>
+    <th>IP</th>
+    <th>Rôle / Description</th>
+  </tr>
+  <tr>
+    <td><b>100</b> (nextcloudpi)</td>
+    <td>192.168.1.100</td>
+    <td><b>Stockage Cloud</b> : Coffre-fort numérique personnel (type Google Drive) pour synchroniser et partager des fichiers en toute sécurité.</td>
+  </tr>
+  <tr>
+    <td><b>101</b> (uptimekuma)</td>
+    <td>192.168.1.101</td>
+    <td><b>Monitoring</b> : Tableau de bord qui vérifie 24h/24 la disponibilité des services et alerte en cas de panne.</td>
+  </tr>
+  <tr>
+    <td><b>102</b> (ntopng)</td>
+    <td>192.168.1.102</td>
+    <td><b>Analyse Réseau</b> : Outil de surveillance qui montre le trafic réseau en temps réel.</td>
+  </tr>
+  <tr>
+    <td><b>103</b> (debian-glpi)</td>
+    <td>192.168.1.103</td>
+    <td><b>Gestion Support &amp; Parc IT</b> : Outil d'assistance pour le suivi du matériel (PC, écrans) et la gestion des tickets de pannes utilisateurs.</td>
+  </tr>
+</table>
+
+<h2>5. Résultat final</h2>
+<p>Le serveur tourne aujourd'hui de manière autonome, consomme très peu d'électricité, et héberge une solution complète de gestion informatique accessible en toute sécurité, sur place comme à distance.</p>
+
+<div class="source-note">
+  <b>Sources :</b> les scripts d'installation des différents services (conteneurs LXC) proviennent de la communauté <b>Proxmox VE Helper-Scripts</b>, disponibles sur <b>https://community-scripts.org/</b>.
+</div>
+
+</body>
+</html>
