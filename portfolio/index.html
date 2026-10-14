@@ -360,6 +360,48 @@
 
   .cv-wrap{text-align:center;margin-top:30px;}
 
+  /* ---------------- VEILLE INFORMATIQUE ---------------- */
+  .veille-container{
+    max-width:1000px;margin:0 auto;
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:42px 38px;
+  }
+  .veille-text h3{
+    font-family:var(--ff-title);
+    font-size:1.35rem;color:var(--accent);
+    margin-bottom:18px;
+  }
+  .veille-text p{
+    color:var(--gray-soft);line-height:1.8;font-size:.95rem;margin-bottom:18px;
+  }
+  .veille-text ul{
+    list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:12px;
+  }
+  .veille-text li{
+    color:var(--white);font-size:.92rem;line-height:1.7;
+  }
+  .veille-media{
+    display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;
+  }
+  .veille-card{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+  }
+  .veille-card h4{
+    font-family:var(--ff-title);
+    font-size:.85rem;color:var(--white);
+    margin-bottom:14px;letter-spacing:.5px;
+  }
+  .veille-card img{
+    width:100%;height:auto;border-radius:6px;
+    object-fit:cover;
+  }
+
   /* ---------------- CONTACT ---------------- */
   #contact .section-head{margin-bottom:60px;}
   .contact-grid{
@@ -406,6 +448,8 @@
     }
     .tl-col.left .tl-badge, .tl-col.right .tl-badge{left:11px;right:auto;}
     .tl-col + .tl-col{margin-top:10px;}
+    .veille-media{grid-template-columns:1fr;}
+    .veille-container{padding:28px 22px;}
   }
 
   @media (max-width:680px){
@@ -446,6 +490,7 @@
       <li><a href="#hero" class="nav-link active">ACCUEIL</a></li>
       <li><a href="#competences" class="nav-link">MES COMPÉTENCES</a></li>
       <li><a href="#formation" class="nav-link">FORMATION</a></li>
+      <li><a href="#veille" class="nav-link">VEILLE INFORMATIQUE</a></li>
       <li><a href="https://portfoliosekou.netlify.app/cv/" class="nav-link">CV</a></li>
       <li><a href="#contact" class="nav-link">CONTACT</a></li>
     </ul>
@@ -565,6 +610,47 @@
 
   <div class="cv-wrap reveal">
     <a href="/cv/index.html" class="btn-pill btn-pill-accent">Consulter mon curriculum vitae en ligne</a>
+  </div>
+</section>
+
+<!-- VEILLE INFORMATIQUE -->
+<section class="section" id="veille">
+  <div class="section-head reveal">
+    <h2>VEILLE INFORMATIQUE</h2>
+    <div class="underline"></div>
+    <p>Automatisation de la collecte d'informations : l'information vient à moi</p>
+  </div>
+
+  <div class="veille-container reveal">
+    <div class="veille-text">
+      <h3>Système Automatisé de Veille Technologique & Cybersécurité</h3>
+      <p>
+        Dans le domaine des systèmes et réseaux, maintenir une veille technologique constante est indispensable pour anticiper les failles de sécurité, suivre l'actualité IT et découvrir de nouveaux outils. Afin d'optimiser ce processus et d'éviter les recherches manuelles chronophages, j'ai conçu un système d'<strong>automatisation globale où l'information vient à moi et non l'inverse</strong>.
+      </p>
+      <p>
+        <strong>Fonctionnement et architecture technique :</strong>
+      </p>
+      <ul>
+        <li>• <strong>Flux RSS & Agrégation :</strong> Interception automatique des derniers articles de blogs spécialisés (ex: Korben's Blog) et de médias spécialisés en informatique et cybersécurité.</li>
+        <li>• <strong>Orchestration via Make (Integromat) :</strong> Création d'un scénario de routage intelligent avec déclencheur temporel, gestionnaires de canaux et modules de formatage de données.</li>
+        <li>• <strong>Notifications Webhooks Discord :</strong> Envoi en temps réel des publications directement sur mon serveur Discord, catégorisées par salons thématiques dédiés (ex: <em>#veille-ai</em>, <em>#cybersecurite</em>).</li>
+      </ul>
+    </div>
+
+    <div class="veille-media">
+      <div class="veille-card">
+        <h4>Scénario d'automatisation sur Make</h4>
+        <img src="assets/img/Make veille info.png" alt="Scénario Make Veille Info">
+      </div>
+      <div class="veille-card">
+        <h4>Notification automatique reçue sur Discord</h4>
+        <img src="assets/img/disco veille info.png" alt="Notification Discord Veille Info">
+      </div>
+    </div>
+
+    <div class="cv-wrap" style="margin-top:40px;">
+      <a href="docs/Doc projet_automatisation_Make_Veille_Info.pdf" target="_blank" rel="noopener" class="btn-pill btn-pill-accent">VOIR LA DOCUMENTATION COMPLÈTE</a>
+    </div>
   </div>
 </section>
 
@@ -761,16 +847,18 @@
   // ---------- HEADER SCROLL + SCROLLSPY ----------
   const header = document.getElementById('site-header');
   const navLinks = document.querySelectorAll('.nav-link');
-  const navSections = ['hero','competences','formation','contact'].map(id => document.getElementById(id));
+  const navSections = ['hero','competences','formation','veille','contact'].map(id => document.getElementById(id));
 
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 80);
 
     let current = navSections[0].id;
     navSections.forEach(sec => {
-      const rect = sec.getBoundingClientRect();
-      if(rect.top <= window.innerHeight * 0.4){
-        current = sec.id;
+      if(sec){
+        const rect = sec.getBoundingClientRect();
+        if(rect.top <= window.innerHeight * 0.4){
+          current = sec.id;
+        }
       }
     });
     navLinks.forEach(link => {
