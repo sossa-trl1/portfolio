@@ -278,7 +278,7 @@
     background:var(--bg-soft);
     border:1px solid var(--line);
     border-radius:14px;
-    max-width:520px;width:100%;
+    max-width:560px;width:100%;
     padding:42px 38px;
     transform:translateY(20px);
     transition:transform .3s ease;
@@ -299,12 +299,12 @@
     transition:border-color .3s ease, background .3s ease;
   }
   .btn-retour:hover{border-color:var(--accent);background:rgba(255,86,48,.08);}
-  .modal-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .modal-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .btn-doc{
     display:none;
     border:1px solid var(--accent);
-    padding:11px 28px;border-radius:50px;
-    font-size:.78rem;font-weight:700;letter-spacing:1px;
+    padding:11px 22px;border-radius:50px;
+    font-size:.75rem;font-weight:700;letter-spacing:1px;
     color:var(--accent);
     transition:background .3s ease, color .3s ease;
   }
@@ -712,8 +712,9 @@
   <div class="modal-box">
     <h3 id="modalTitle"></h3>
     <p id="modalDesc"></p>
-    <div class="modal-actions">
+    <div class="modal-actions" id="modalActions">
       <a href="#" target="_blank" rel="noopener" class="btn-doc" id="modalDoc">VOIR LA DOCUMENTATION</a>
+      <a href="#" target="_blank" rel="noopener" class="btn-doc" id="modalDocExtra">GUIDE TAILSCALE</a>
       <button class="btn-retour" id="modalClose">RETOUR</button>
     </div>
   </div>
@@ -738,17 +739,13 @@
     },
     {
       title: "Déploiement & Administration Nextcloud",
-      type: "Cloud Privé — LAMP & Proxmox VE",
-      desc: "Déploiement d'une instance Nextcloud sous conteneur LXC Proxmox VE via NextcloudPi (pile LAMP). Configuration du serveur web Apache, accès distant sécurisé via VPN Mesh Tailscale et chiffrement HTTPS. Administration des comptes utilisateurs (admin, technicien), gestion des droits et des quotas de stockage (ex: 5 Go), et automatisation des sauvegardes (nc-autobackup tous les 3 jours).",
+      type: "Cloud Privé — LAMP, Proxmox VE & Tailscale",
+      desc: "Déploiement d'une instance Nextcloud sous conteneur LXC Proxmox VE via NextcloudPi (pile LAMP). Configuration du serveur web Apache et administration des comptes (admin, technicien) avec gestion des quotas (5 Go) et sauvegardes (nc-autobackup). Configuration de l'accès distant sécurisé via le VPN Mesh Tailscale et rédaction d'un guide d'installation client complet.",
       img: "assets/img/nextcloud.jpg",
-      link: "docs/Documentation Technique Déploiement et Administration de Nextcloud.pdf"
-    },
-    {
-      title: "Accès Distant & VPN Tailscale Nextcloud",
-      type: "Réseau & Sécurité VPN Mesh",
-      desc: "Rédaction d'un guide d'installation et de connexion client pour accéder au serveur Nextcloud à distance via Tailscale. Processus pas à pas : acceptation des invitations, installation multiplateforme (PC, Mac, iOS, Android), authentification sécurisée et accès à l'instance Nextcloud sans exposition publique.",
-      img: "assets/img/nextcloud.jpg",
-      link: "docs/Guide installation nextcloud tailscale.pdf"
+      link: "docs/Documentation Technique Déploiement et Administration de Nextcloud.pdf",
+      linkLabel: "DOC TECHNIQUE NEXTCLOUD",
+      linkExtra: "docs/Guide installation nextcloud tailscale.pdf",
+      linkExtraLabel: "GUIDE CLIENT TAILSCALE"
     },
     {
       title: "ProBio",
@@ -804,12 +801,15 @@
   const modalTitle = document.getElementById('modalTitle');
   const modalDesc = document.getElementById('modalDesc');
   const modalDoc = document.getElementById('modalDoc');
+  const modalDocExtra = document.getElementById('modalDocExtra');
 
   document.querySelectorAll('.card-plus').forEach(btn => {
     btn.addEventListener('click', () => {
       const p = projects[btn.dataset.index];
       modalTitle.textContent = p.title;
       modalDesc.textContent = p.desc;
+      
+      // Premier lien
       if(p.link){
         modalDoc.href = p.link;
         modalDoc.textContent = p.linkLabel || "VOIR LA DOCUMENTATION";
@@ -817,9 +817,20 @@
       } else {
         modalDoc.classList.remove('visible');
       }
+
+      // Deuxième lien optionnel (Guide Tailscale)
+      if(p.linkExtra){
+        modalDocExtra.href = p.linkExtra;
+        modalDocExtra.textContent = p.linkExtraLabel || "GUIDE TAILSCALE";
+        modalDocExtra.classList.add('visible');
+      } else {
+        modalDocExtra.classList.remove('visible');
+      }
+
       modalOverlay.classList.add('active');
     });
   });
+  
   document.getElementById('modalClose').addEventListener('click', () => modalOverlay.classList.remove('active'));
   modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 
