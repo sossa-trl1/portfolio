@@ -198,7 +198,7 @@
     padding:130px 7%;
     background:var(--bg);
   }
-  .section-head{text-align:center;margin-bottom:80px;}
+  .section-head{text-align:center;margin-bottom:60px;}
   .section-head h2{
     font-family:var(--ff-title);
     font-weight:800;
@@ -214,12 +214,29 @@
     font-style:italic;font-size:.95rem;
   }
 
-  /* ---------------- COMPETENCES ---------------- */
+  /* ---------------- COMPETENCES & CATEGORIES ---------------- */
+  .competences-container{
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:50px;
+  }
+  .category-title{
+    font-family:var(--ff-title);
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
   .grid-projects{
-    max-width:1180px;margin:0 auto;
     display:grid;
     grid-template-columns:repeat(3, 1fr);
-    gap:36px;
+    gap:32px;
   }
   .card{
     position:relative;
@@ -526,10 +543,10 @@
   <div class="section-head reveal">
     <h2>Mes compétences&nbsp;!</h2>
     <div class="underline"></div>
-    <p>Présentation de mes dernières expériences.</p>
+    <p>Présentation de mes projets organisés par catégories.</p>
   </div>
 
-  <div class="grid-projects" id="projectsGrid"></div>
+  <div class="competences-container" id="competencesContainer"></div>
 </section>
 
 <!-- FORMATION -->
@@ -721,82 +738,128 @@
 </div>
 
 <script>
-  // ---------- DATA PROJETS ----------
-  const projects = [
+  // ---------- DATA PROJETS RANGÉS PAR CATÉGORIES ----------
+  const categories = [
     {
-      title: "Déploiement Active Directory",
-      type: "Lab Windows Server",
-      desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès.",
-      img: "assets/img/active-directory.png",
-      link: "docs/active-directory.pdf"
+      name: "Homelab",
+      icon: "🖥️",
+      projects: [
+        {
+          title: "Serveur Proxmox",
+          type: "Homelab — Proxmox VE",
+          desc: "Serveur personnel monté sur un ancien PC fixe, virtualisé avec Proxmox VE. Héberge plusieurs services en conteneurs/VM séparés : GLPI 10, Nextcloud, Uptime Kuma (supervision, alertes via webhook Discord) et ntopng (analyse du trafic réseau). Accès à distance sécurisé via Tailscale.",
+          img: "assets/img/serv proxmox.png",
+          link: "docs/serveur-proxmox 1.pdf"
+        },
+        {
+          title: "Déploiement & Administration Nextcloud",
+          type: "Cloud Privé — LAMP, Proxmox VE & Tailscale",
+          desc: "Déploiement d'une instance Nextcloud sous conteneur LXC Proxmox VE via NextcloudPi (pile LAMP). Configuration du serveur web Apache et administration des comptes (admin, technicien) avec gestion des quotas (5 Go) et sauvegardes (nc-autobackup). Configuration de l'accès distant sécurisé via le VPN Mesh Tailscale et rédaction d'un guide d'installation client complet.",
+          img: "assets/img/nextcloud.jpg",
+          link: "docs/Documentation Technique Déploiement et Administration de Nextcloud.pdf",
+          linkLabel: "DOC TECHNIQUE NEXTCLOUD",
+          linkExtra: "docs/Guide installation nextcloud tailscale.pdf",
+          linkExtraLabel: "GUIDE CLIENT TAILSCALE"
+        },
+        {
+          title: "Déploiement GLPI 10",
+          type: "ITSM — Gestion de parc & tickets",
+          desc: "Installation de GLPI 10 dans un conteneur LXC Debian 12 sur Proxmox VE, avec une pile Apache/MariaDB/PHP. Mise en place de la base de données, configuration du VirtualHost Apache, puis sécurisation post-installation (suppression du dossier d'install, durcissement des sessions PHP, changement des identifiants par défaut) et automatisation des tâches de fond via cron.",
+          img: "assets/img/glpi img.png",
+          link: "docs/glpi.pdf"
+        }
+      ]
     },
     {
-      title: "Déploiement GLPI 10",
-      type: "ITSM — Gestion de parc & tickets",
-      desc: "Installation de GLPI 10 dans un conteneur LXC Debian 12 sur Proxmox VE, avec une pile Apache/MariaDB/PHP. Mise en place de la base de données, configuration du VirtualHost Apache, puis sécurisation post-installation (suppression du dossier d'install, durcissement des sessions PHP, changement des identifiants par défaut) et automatisation des tâches de fond via cron.",
-      img: "assets/img/glpi img.png",
-      link: "docs/glpi.pdf"
+      name: "Administration Système & Réseau",
+      icon: "🔐",
+      projects: [
+        {
+          title: "Déploiement Active Directory",
+          type: "Lab Windows Server",
+          desc: "Installation et configuration d'un domaine Active Directory sous Windows Server : création de l'arborescence, gestion des utilisateurs et des groupes, mise en place des stratégies de groupe (GPO) et sécurisation des accès.",
+          img: "assets/img/active-directory.png",
+          link: "docs/active-directory.pdf"
+        }
+      ]
     },
     {
-      title: "Déploiement & Administration Nextcloud",
-      type: "Cloud Privé — LAMP, Proxmox VE & Tailscale",
-      desc: "Déploiement d'une instance Nextcloud sous conteneur LXC Proxmox VE via NextcloudPi (pile LAMP). Configuration du serveur web Apache et administration des comptes (admin, technicien) avec gestion des quotas (5 Go) et sauvegardes (nc-autobackup). Configuration de l'accès distant sécurisé via le VPN Mesh Tailscale et rédaction d'un guide d'installation client complet.",
-      img: "assets/img/nextcloud.jpg",
-      link: "docs/Documentation Technique Déploiement et Administration de Nextcloud.pdf",
-      linkLabel: "DOC TECHNIQUE NEXTCLOUD",
-      linkExtra: "docs/Guide installation nextcloud tailscale.pdf",
-      linkExtraLabel: "GUIDE CLIENT TAILSCALE"
+      name: "Automatisation & Scripts",
+      icon: "⚡",
+      projects: [
+        {
+          title: "Tri de Mails & Alertes Discord",
+          type: "Script Python & Automatisation Linux (Crontab)",
+          desc: "Script Python autonome exécuté dans un conteneur LXC Debian sous Proxmox VE. Analyse et trie automatiquement les courriels Gmail via IMAP selon des règles de priorité ciblées (cours, offres d'alternance, veille, abonnements). Rangement automatique dans les libellés Gmail, envoi de notifications en temps réel et d'un rapport horaire consolidé sur Discord via Webhooks, le tout automatisé par Crontab.",
+          img: "assets/img/python_discord.jpg",
+          link: "docs/Doc projet trie_mails python.pdf"
+        },
+        {
+          title: "ProBio",
+          type: "Automatisation — Make / OpenAI",
+          desc: "Générateur de biographies automatisé combinant Make et l'API OpenAI, permettant de produire des textes de présentation personnalisés à partir de quelques informations saisies par l'utilisateur.",
+          img: "assets/img/pro bio.png",
+          link: "https://pro-bio.netlify.app/",
+          linkLabel: "VISITER Pro-bio"
+        }
+      ]
     },
     {
-      title: "ProBio",
-      type: "Automatisation — Make / OpenAI",
-      desc: "Générateur de biographies automatisé combinant Make et l'API OpenAI, permettant de produire des textes de présentation personnalisés à partir de quelques informations saisies par l'utilisateur.",
-      img: "assets/img/pro bio.png",
-      link: "https://pro-bio.netlify.app/",
-      linkLabel: "VISITER Pro-bio"
-    },
-    {
-      title: "Tri de Mails & Alertes Discord",
-      type: "Script Python & Automatisation Linux (Crontab)",
-      desc: "Script Python autonome exécuté dans un conteneur LXC Debian sous Proxmox VE. Analyse et trie automatiquement les courriels Gmail via IMAP selon des règles de priorité ciblées (cours, offres d'alternance, veille, abonnements). Rangement automatique dans les libellés Gmail, envoi de notifications en temps réel et d'un rapport horaire consolidé sur Discord via Webhooks, le tout automatisé par Crontab.",
-      img: "assets/img/python_discord.jpg",
-      link: "docs/Doc projet trie_mails python.pdf"
-    },
-    {
-      title: "The Odin Project",
-      type: "HTML / CSS / JavaScript",
-      desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript.",
-      img: "assets/img/odin-project.png",
-      link: "https://www.theodinproject.com/",
-      linkLabel: "VISITER THE ODIN PROJECT"
-    },
-    {
-      title: "Serveur Proxmox",
-      type: "Homelab — Proxmox VE",
-      desc: "Serveur personnel monté sur un ancien PC fixe, virtualisé avec Proxmox VE. Héberge plusieurs services en conteneurs/VM séparés : GLPI 10, Nextcloud, Uptime Kuma (supervision, alertes via webhook Discord) et ntopng (analyse du trafic réseau). Accès à distance sécurisé via Tailscale.",
-      img: "assets/img/serv proxmox.png",
-      link: "docs/serveur-proxmox 1.pdf"
+      name: "Développement Web",
+      icon: "🌐",
+      projects: [
+        {
+          title: "The Odin Project",
+          type: "HTML / CSS / JavaScript",
+          desc: "Projets réalisés dans le cadre du cursus The Odin Project, autour des fondamentaux du développement web : structuration HTML, mise en forme CSS et logique JavaScript.",
+          img: "assets/img/odin-project.png",
+          link: "https://www.theodinproject.com/",
+          linkLabel: "VISITER THE ODIN PROJECT"
+        }
+      ]
     }
   ];
 
-  const grid = document.getElementById('projectsGrid');
-  projects.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'card reveal';
-    const thumb = p.img
-      ? `<div class="card-thumb has-img"><img src="${p.img}" alt="${p.title}"></div>`
-      : `<div class="card-thumb">Visuel à venir</div>`;
-    card.innerHTML = `
-      ${thumb}
-      <button class="card-plus" data-index="${i}">+</button>
-      <div class="card-body">
-        <h3>${p.title}</h3>
-        <span>${p.type}</span>
-      </div>
-    `;
-    grid.appendChild(card);
+  // ---------- AFFICHAGE DYNAMIQUE PAR CATÉGORIES ----------
+  const container = document.getElementById('competencesContainer');
+  let globalIndex = 0;
+  const allProjects = [];
+
+  categories.forEach(cat => {
+    // Titre de la catégorie
+    const catTitle = document.createElement('h3');
+    catTitle.className = 'category-title reveal';
+    catTitle.innerHTML = `<span>${cat.icon}</span> ${cat.name}`;
+    container.appendChild(catTitle);
+
+    // Grille de projets
+    const grid = document.createElement('div');
+    grid.className = 'grid-projects';
+
+    cat.projects.forEach(p => {
+      const pIdx = globalIndex++;
+      allProjects.push(p);
+
+      const card = document.createElement('div');
+      card.className = 'card reveal';
+      const thumb = p.img
+        ? `<div class="card-thumb has-img"><img src="${p.img}" alt="${p.title}"></div>`
+        : `<div class="card-thumb">Visuel à venir</div>`;
+      card.innerHTML = `
+        ${thumb}
+        <button class="card-plus" data-index="${pIdx}">+</button>
+        <div class="card-body">
+          <h3>${p.title}</h3>
+          <span>${p.type}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
   });
 
+  // ---------- MODAL ----------
   const modalOverlay = document.getElementById('modalOverlay');
   const modalTitle = document.getElementById('modalTitle');
   const modalDesc = document.getElementById('modalDesc');
@@ -805,7 +868,7 @@
 
   document.querySelectorAll('.card-plus').forEach(btn => {
     btn.addEventListener('click', () => {
-      const p = projects[btn.dataset.index];
+      const p = allProjects[btn.dataset.index];
       modalTitle.textContent = p.title;
       modalDesc.textContent = p.desc;
       
